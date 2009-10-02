@@ -20,3 +20,7 @@ should have a freshly compiled and working widgetset.
 If you want to get rid of all the red in Eclipse, add gwt-user.jar and 
 gwt-dev-[platform].jar into your classpath, and they will go away. You won't, 
 however, need them for the Toolkit application itself.
+
+The star images provided in the example application are from Wikimedia Commons 
+http://commons.wikimedia.org/wiki/Category:Nuvola_icons and are licensed under
+GNU Lesser General Public License. 
