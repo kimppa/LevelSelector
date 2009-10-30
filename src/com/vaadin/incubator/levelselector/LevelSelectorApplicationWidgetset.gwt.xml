@@ -1,9 +1,4 @@
 <module>
 	<!-- Inherit super widgetset -->
 	<inherits name="com.vaadin.terminal.gwt.DefaultWidgetSet" /> 
-	<!-- <inherits name="com.allen_sauer.gwt.dnd.gwt-dnd" /> --> 
-	
-	<!-- Entry point -->
-	<entry-point class="com.vaadin.incubator.levelselector.client.LevelSelectorApplicationWidgetset"/>
-	
 </module>

@@ -2,9 +2,11 @@ package com.vaadin.incubator.levelselector;
 
 import java.util.Map;
 
+import com.vaadin.incubator.levelselector.client.ui.VLevelSelector;
 import com.vaadin.terminal.PaintException;
 import com.vaadin.terminal.PaintTarget;
 import com.vaadin.ui.AbstractField;
+import com.vaadin.ui.ClientWidget;
 
 /**
  * 
@@ -12,6 +14,7 @@ import com.vaadin.ui.AbstractField;
  * 
  */
 @SuppressWarnings("unchecked")
+@ClientWidget(VLevelSelector.class)
 public class LevelSelector extends AbstractField {
 
     private static final long serialVersionUID = 6173115029929032332L;
@@ -21,11 +24,6 @@ public class LevelSelector extends AbstractField {
     protected int maxValue = 1;
 
     protected Integer blockSize = null;
-
-    @Override
-    public String getTag() {
-        return "levelselector";
-    }
 
     /**
      * Set the maximum value the user can choose, simultaneously this decides
