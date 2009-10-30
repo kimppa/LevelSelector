@@ -46,3 +46,27 @@
 .v-levelselector-stars .box-selected {
 	background: url(star.png) no-repeat !important;
 }
+
+
+.v-levelselector-volume {
+	border: none;
+	background: url(color.png) no-repeat;
+	overflow: hidden;
+	padding: 0px;
+}
+
+.v-levelselector-volume .box {
+	height: 100%;
+	float: left;
+	background: #f5f5f5;
+	opacity:0.8;filter:alpha(opacity=80);
+}
+
+.v-levelselector-volume .box-disabled {
+	
+}
+
+.v-levelselector-volume .box-selected {
+	background: transparent !important;
+	opacity:0;filter:alpha(opacity=0);
+}

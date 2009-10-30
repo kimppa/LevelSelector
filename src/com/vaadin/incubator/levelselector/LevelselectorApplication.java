@@ -21,6 +21,15 @@ public class LevelselectorApplication extends Application implements
         setTheme("example");
         Window mainWindow = new Window("Components Application");
         setMainWindow(mainWindow);
+
+        Label description = new Label(
+                "<b>This application demonstrates the LevelSelector component. "
+                        + "Note that all the three different components on this page are instances of "
+                        + "the LevelSelector component. The only thing that is different between them is "
+                        + "the CSS styling.</b>", Label.CONTENT_XHTML);
+
+        mainWindow.addComponent(description);
+
         final LevelSelector selector = new LevelSelector();
         selector.setCaption("Select volume level");
         selector.setMaxValue(25);
@@ -70,6 +79,19 @@ public class LevelselectorApplication extends Application implements
         selector2.setImmediate(true);
         selector2.setStyleName("stars");
         mainWindow.addComponent(selector2);
+
+        final LevelSelector selector3 = new LevelSelector();
+        selector3.setCaption("More CSS trickery");
+        selector3.setMaxValue(100);
+        selector3.setValue(1);
+        selector3.setMinValue(1);
+        selector3.setHeight("40px");
+        selector3.setBlockSize(3);
+        selector3.addListener(this);
+        selector3.setImmediate(true);
+        selector3.setStyleName("volume");
+        mainWindow.addComponent(selector3);
+
     }
 
     public void valueChange(ValueChangeEvent event) {
