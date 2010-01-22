@@ -1,4 +1,4 @@
-package com.vaadin.incubator.levelselector.client.ui;
+package org.vaadin.kim.levelselector.client.ui;
 
 import java.util.ArrayList;
 import java.util.List;

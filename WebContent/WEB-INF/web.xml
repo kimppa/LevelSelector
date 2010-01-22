@@ -13,12 +13,12 @@
 			com.vaadin.terminal.gwt.server.ApplicationServlet</servlet-class>
 		<init-param>
 			<param-name>application</param-name>
-			<param-value>com.vaadin.incubator.levelselector.LevelselectorApplication</param-value>
+			<param-value>org.vaadin.kim.levelselector.LevelselectorApplication</param-value>
 			<description>Vaadin application class to start</description>
 		</init-param>
 		<init-param>
 			<param-name>widgetset</param-name>
-			<param-value>com.vaadin.incubator.levelselector.LevelSelectorApplicationWidgetset</param-value>
+			<param-value>org.vaadin.kim.levelselector.LevelSelectorApplicationWidgetset</param-value>
 		</init-param>
 	</servlet>
 	<servlet-mapping>

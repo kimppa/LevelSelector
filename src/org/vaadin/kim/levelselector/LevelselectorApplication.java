@@ -1,4 +1,4 @@
-package com.vaadin.incubator.levelselector;
+package org.vaadin.kim.levelselector;
 
 import com.vaadin.Application;
 import com.vaadin.data.Property.ValueChangeEvent;
