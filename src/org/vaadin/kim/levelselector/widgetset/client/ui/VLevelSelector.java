@@ -1,4 +1,4 @@
-package org.vaadin.kim.levelselector.client.ui;
+package org.vaadin.kim.levelselector.widgetset.client.ui;
 
 import java.util.ArrayList;
 import java.util.List;

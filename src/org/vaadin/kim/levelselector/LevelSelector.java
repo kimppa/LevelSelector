@@ -2,7 +2,7 @@ package org.vaadin.kim.levelselector;
 
 import java.util.Map;
 
-import org.vaadin.kim.levelselector.client.ui.VLevelSelector;
+import org.vaadin.kim.levelselector.widgetset.client.ui.VLevelSelector;
 
 import com.vaadin.terminal.PaintException;
 import com.vaadin.terminal.PaintTarget;
