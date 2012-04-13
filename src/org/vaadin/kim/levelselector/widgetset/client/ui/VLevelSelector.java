@@ -9,195 +9,207 @@ import com.google.gwt.user.client.DOM;
 import com.google.gwt.user.client.Event;
 import com.google.gwt.user.client.ui.FlowPanel;
 import com.google.gwt.user.client.ui.Widget;
-import com.vaadin.terminal.gwt.client.ApplicationConnection;
-import com.vaadin.terminal.gwt.client.Paintable;
-import com.vaadin.terminal.gwt.client.UIDL;
 
-public class VLevelSelector extends FlowPanel implements Paintable {
+public class VLevelSelector extends FlowPanel {
 
-    /** Set the tagname used to statically resolve widget from UIDL. */
-    public static final String TAGNAME = "levelselector";
+	/** Set the tagname used to statically resolve widget from UIDL. */
+	public static final String TAGNAME = "levelselector";
 
-    /** Set the CSS class name to allow styling. */
-    public static final String CLASSNAME = "v-" + TAGNAME;
+	/** Set the CSS class name to allow styling. */
+	public static final String CLASSNAME = "v-" + TAGNAME;
 
-    protected int maxValue = 1;
+	private int maxValue = 1;
 
-    protected int value = 0;
+	private int value = 0;
 
-    protected int minValue = 1;
+	private int minValue = 1;
 
-    protected int elementWidth = 0;
+	protected int elementWidth = 0;
 
-    protected String id;
+	protected boolean immediate = false;
 
-    protected boolean immediate = false;
+	protected List<SelectionBox> boxes = new ArrayList<SelectionBox>();
 
-    protected List<SelectionBox> boxes = new ArrayList<SelectionBox>();
+	private List<ValueChangeListener> listeners = new ArrayList<ValueChangeListener>();
 
-    /** Component identifier in UIDL communications. */
-    String uidlId;
+	private Integer blockSize;
 
-    /** Reference to the server connection object. */
-    ApplicationConnection client;
+	/**
+	 * The constructor should first call super() to initialize the component and
+	 * then handle any initialization relevant to Vaadin.
+	 */
+	public VLevelSelector() {
+		setStyleName(CLASSNAME);
+	}
 
-    /**
-     * The constructor should first call super() to initialize the component and
-     * then handle any initialization relevant to Vaadin.
-     */
-    public VLevelSelector() {
-        // This method call of the Paintable interface sets the component
-        // style name in DOM tree
-        setStyleName(CLASSNAME);
-    }
+	public void setState(int maxValue, int minValue, int value, Integer blockSize) {
+		setMaxValue(maxValue);
+		setMinValue(minValue);
+		setBlockSize(blockSize);
+		this.value = value;
+		requestRepaint();
+	}
 
-    public void updateFromUIDL(UIDL uidl, ApplicationConnection client) {
-        // This call should be made first. Ensure correct implementation,
-        // and let the containing layout manage caption, etc.
-        if (client.updateComponent(this, uidl, true)) {
-            return;
-        }
+	private void setBlockSize(Integer blockSize) {
+		this.blockSize = blockSize;
+	}
 
-        // Save reference to server connection object to be able to send
-        // user interaction later
-        this.client = client;
+	protected void requestRepaint() {
+		elementWidth = getElement().getClientWidth();
+		
+		if (boxes.size() > maxValue) {
+			for (int i = maxValue; i < boxes.size(); i++) {
+				SelectionBox box = boxes.get(maxValue - 1);
+				remove(box);
+				boxes.remove(box);
+			}
+		}
 
-        // Save the UIDL identifier for the component
-        id = uidl.getId();
+		for (int i = boxes.size(); i < maxValue; i++) {
+			SelectionBox box = new SelectionBox(i + 1);
+			boxes.add(box);
+			add(box);
+		}
 
-        UIDL child = uidl.getChildUIDL(0);
+		for (SelectionBox box : boxes) {
+			box.resetStyles();
+			box.resetSize();
+			box.resetEvents();
+		}
+	}
 
-        maxValue = child.getIntAttribute("maxValue");
-        minValue = child.getIntAttribute("minLevel");
-        value = child.getIntAttribute("value");
-        elementWidth = getElement().getClientWidth();
+	protected void hoveringAt(int pos) {
+		for (int i = getMinValue() - 1; i < pos; i++) {
+			boxes.get(i).addStyleName("box-selected");
+		}
+		for (int i = pos; i < boxes.size(); i++) {
+			boxes.get(i).removeStyleName("box-selected");
+		}
+	}
 
-        immediate = uidl.getBooleanAttribute("immediate");
+	protected void hoverOut() {
+		for (SelectionBox box : boxes) {
+			box.resetStyles();
+		}
+	}
 
-        if (value > maxValue) {
-            value = maxValue;
-        }
+	protected void setValue(int value) {
+		this.value = value;
+		if (value <= getMaxValue() && value >= getMinValue()) {
+			for(ValueChangeListener listener : listeners) {
+				listener.valueChanged(value);
+			}
+		}
+	}
 
-        // TODO: update size
-        if (boxes.size() > maxValue) {
-            for (int i = maxValue; i < boxes.size(); i++) {
-                SelectionBox box = boxes.get(maxValue - 1);
-                remove(box);
-                boxes.remove(box);
-            }
-        }
+	public int getMaxValue() {
+		return maxValue;
+	}
 
-        for (int i = boxes.size(); i < maxValue; i++) {
-            SelectionBox box = new SelectionBox(i + 1);
-            boxes.add(box);
-            add(box);
-        }
+	protected void setMaxValue(int maxValue) {
+		if (value > maxValue) {
+			value = maxValue;
+		}
 
-        for (SelectionBox box : boxes) {
-            box.resetStyles();
-            box.resetSize();
-            box.resetEvents();
-        }
-    }
+		this.maxValue = maxValue;
+	}
 
-    protected void hoveringAt(int pos) {
-        for (int i = minValue - 1; i < pos; i++) {
-            boxes.get(i).addStyleName("box-selected");
-        }
-        for (int i = pos; i < boxes.size(); i++) {
-            boxes.get(i).removeStyleName("box-selected");
-        }
-    }
+	public int getMinValue() {
+		return minValue;
+	}
 
-    protected void hoverOut() {
-        for (SelectionBox box : boxes) {
-            box.resetStyles();
-        }
-    }
+	protected void setMinValue(int minValue) {
+		this.minValue = minValue;
+	}
 
-    protected void setValue(int value) {
-        this.value = value;
-        if (value <= maxValue && value >= minValue) {
-            client.updateVariable(id, "value", value, immediate);
-        }
-    }
+	public Integer getValue() {
+		return value;
+	}
 
-    protected class SelectionBox extends Widget {
+	protected class SelectionBox extends Widget {
 
-        protected int pos;
+		protected int pos;
 
-        public SelectionBox(int pos) {
-            // DivElement box = Document.get().createDivElement();
-            SpanElement box = Document.get().createSpanElement();
-            setElement(box);
-            addStyleName("box");
+		public SelectionBox(int pos) {
+			SpanElement box = Document.get().createSpanElement();
+			setElement(box);
+			addStyleName("box");
 
-            int width = (int) Math.floor(elementWidth / maxValue) - 1;
-            setWidth(width + "px");
+			if (getMinValue() > pos) {
+				addStyleName("box-disabled");
+			} else {
+				sinkEvents(Event.ONCLICK);
+				sinkEvents(Event.ONMOUSEOUT);
+				sinkEvents(Event.ONMOUSEOVER);
+			}
 
-            if (minValue > pos) {
-                addStyleName("box-disabled");
-            } else {
-                sinkEvents(Event.ONCLICK);
-                sinkEvents(Event.ONMOUSEOUT);
-                sinkEvents(Event.ONMOUSEOVER);
-            }
+			if (value >= pos && pos >= getMinValue()) {
+				addStyleName("box-selected");
+			}
 
-            if (value >= pos && pos >= minValue) {
-                addStyleName("box-selected");
-            }
+			this.pos = pos;
+		}
 
-            this.pos = pos;
-        }
+		public void resetSize() {
+			if(blockSize == null) {
+				float size = 100f/boxes.size();
+				setWidth(size + "%");
+			} else {
+				setWidth(blockSize + "px");
+			}
+		}
 
-        public void resetStyles() {
-            if (minValue > pos) {
-                removeStyleName("box-selected");
-                addStyleName("box-disabled");
-            } else if (value >= pos) {
-                removeStyleName("box-disabled");
-                addStyleName("box-selected");
-            } else {
-                removeStyleName("box-disabled");
-                removeStyleName("box-selected");
-            }
-        }
+		public void resetStyles() {
+			if (getMinValue() > pos) {
+				removeStyleName("box-selected");
+				addStyleName("box-disabled");
+			} else if (value >= pos) {
+				removeStyleName("box-disabled");
+				addStyleName("box-selected");
+			} else {
+				removeStyleName("box-disabled");
+				removeStyleName("box-selected");
+			}
+		}
 
-        @Override
-        public void onBrowserEvent(Event event) {
-            super.onBrowserEvent(event);
-            switch (DOM.eventGetType(event)) {
-            case Event.ONMOUSEOVER:
-                hoveringAt(pos);
-                break;
-            case Event.ONMOUSEOUT:
-                hoverOut();
-                break;
-            case Event.ONCLICK:
-                setValue(pos);
-                break;
+		@Override
+		public void onBrowserEvent(Event event) {
+			super.onBrowserEvent(event);
+			switch (DOM.eventGetType(event)) {
+			case Event.ONMOUSEOVER:
+				hoveringAt(pos);
+				break;
+			case Event.ONMOUSEOUT:
+				hoverOut();
+				break;
+			case Event.ONCLICK:
+				setValue(pos);
+				break;
 
-            default:
-                break;
-            }
-        }
+			default:
+				break;
+			}
+		}
 
-        public void resetSize() {
-            int width = (int) Math.floor(elementWidth / maxValue) - 1;
-            setWidth(width + "px");
-        }
+		public void resetEvents() {
+			if (getMinValue() > pos) {
+				unsinkEvents(Event.ONCLICK);
+				unsinkEvents(Event.ONMOUSEOUT);
+				unsinkEvents(Event.ONMOUSEOVER);
+			} else {
+				sinkEvents(Event.ONCLICK);
+				sinkEvents(Event.ONMOUSEOUT);
+				sinkEvents(Event.ONMOUSEOVER);
+			}
+		}
 
-        public void resetEvents() {
-            if (minValue > pos) {
-                unsinkEvents(Event.ONCLICK);
-                unsinkEvents(Event.ONMOUSEOUT);
-                unsinkEvents(Event.ONMOUSEOVER);
-            } else {
-                sinkEvents(Event.ONCLICK);
-                sinkEvents(Event.ONMOUSEOUT);
-                sinkEvents(Event.ONMOUSEOVER);
-            }
-        }
+	}
 
-    }
+	public static interface ValueChangeListener {
+		public void valueChanged(Integer value);
+	}
+	
+	public void addListener(ValueChangeListener listener) {
+		listeners .add(listener);
+	}
 }

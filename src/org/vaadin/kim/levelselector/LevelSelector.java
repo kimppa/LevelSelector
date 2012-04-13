@@ -1,166 +1,165 @@
 package org.vaadin.kim.levelselector;
 
-import java.util.Map;
+import org.vaadin.kim.levelselector.widgetset.client.ui.LevelSelectorRpc;
+import org.vaadin.kim.levelselector.widgetset.client.ui.LevelSelectorState;
 
-import org.vaadin.kim.levelselector.widgetset.client.ui.VLevelSelector;
-
-import com.vaadin.terminal.PaintException;
-import com.vaadin.terminal.PaintTarget;
+import com.vaadin.data.util.converter.Converter.ConversionException;
 import com.vaadin.ui.AbstractField;
-import com.vaadin.ui.ClientWidget;
 
 /**
  * 
  * @author Kim Leppänen
  * 
  */
-@SuppressWarnings("unchecked")
-@ClientWidget(VLevelSelector.class)
-public class LevelSelector extends AbstractField {
+public class LevelSelector extends AbstractField<Integer> {
 
-    private static final long serialVersionUID = 6173115029929032332L;
+	private static final long serialVersionUID = 6173115029929032332L;
 
-    protected int minValue = 1;
+	protected int minValue = 1;
 
-    protected int maxValue = 1;
+	protected int maxValue = 1;
 
-    protected Integer blockSize = null;
+	protected Integer blockSize = null;
 
-    /**
-     * Set the maximum value the user can choose, simultaneously this decides
-     * the number of blocks displayed.
-     * 
-     * @param maxValue
-     */
-    public void setMaxValue(int maxValue) {
-        this.maxValue = maxValue;
-        if (blockSize != null) {
-            super.setWidth(maxValue * blockSize + "px");
-        }
-        requestRepaint();
-    }
+	public LevelSelector() {
+		LevelSelectorRpc rpc = new LevelSelectorRpc() {
 
-    /**
-     * Get the current maximum value the user can choose.
-     * 
-     * @return
-     */
-    public int getMaxValue() {
-        return maxValue;
-    }
+			private static final long serialVersionUID = -6056647151709185L;
 
-    @Override
-    public Class<?> getType() {
-        return Integer.class;
-    }
+			public void valueChanged(Integer value) {
+				if (value >= minValue && value <= maxValue) {
+					LevelSelector.this.setValue(value, false);
+				}
+			}
+		};
+		registerRpc(rpc);
+	}
 
-    @Override
-    public void setValue(Object newValue) throws ReadOnlyException,
-            ConversionException {
-        if (newValue instanceof Integer) {
-            super.setValue(newValue);
-        } else if (newValue == null) {
-            throw new ConversionException();
-        } else {
-            try {
-                super.setValue(Integer.valueOf(newValue.toString()));
-            } catch (Exception e) {
-                throw new ConversionException();
-            }
-        }
-    }
+	/**
+	 * Set the maximum value the user can choose, simultaneously this decides
+	 * the number of blocks displayed.
+	 * 
+	 * @param maxValue
+	 */
+	public void setMaxValue(int maxValue) {
+		this.maxValue = maxValue;
+		requestRepaint();
+	}
 
-    @Override
-    public void changeVariables(Object source, Map variables) {
-        super.changeVariables(source, variables);
-        if (variables.containsKey("value") && !isReadOnly()) {
-            int value = Integer.valueOf(variables.get("value").toString());
-            if (value >= minValue && value <= maxValue) {
-                super.setValue(value, false);
-            }
-        }
-    }
+	/**
+	 * Get the current maximum value the user can choose.
+	 * 
+	 * @return
+	 */
+	public int getMaxValue() {
+		return maxValue;
+	}
 
-    @Override
-    public void paintContent(PaintTarget target) throws PaintException {
-        super.paintContent(target);
+	@Override
+	public Class<Integer> getType() {
+		return Integer.class;
+	}
 
-        float width = 0;
-        if (blockSize != null) {
-            width = maxValue * blockSize;
-        } else {
-            width = getWidth();
-        }
+	@Override
+	public void setValue(Object newValue) throws ReadOnlyException,
+			ConversionException {
+		if (newValue instanceof Integer) {
+			Integer intValue = (Integer) newValue;
+			if (intValue < getMinValue()) {
+				throw new IllegalArgumentException(
+						"Value is below the defined minimum value");
+			}
+			if (intValue > getMaxValue()) {
+				throw new IllegalArgumentException(
+						"Value is above the defined maximum value");
+			}
+			super.setValue(newValue);
+		} else if (newValue == null) {
+			throw new ConversionException();
+		} else {
+			try {
+				this.setValue(Integer.valueOf(newValue.toString()));
+			} catch (Exception e) {
+				throw new ConversionException();
+			}
+		}
+	}
 
-        target.startTag("level");
-        target.addAttribute("width", width);
-        target.addAttribute("height", getHeight());
-        Object value = getValue();
-        int intValue = value == null ? 0 : Integer.valueOf(value.toString());
-        target.addAttribute("value", intValue);
-        target.addAttribute("minLevel", minValue);
-        target.addAttribute("maxValue", maxValue);
-        target.endTag("level");
-    }
+	@Override
+	public LevelSelectorState getState() {
+		return (LevelSelectorState) super.getState();
+	}
 
-    /**
-     * Set the minimum number of blocks the user can choose. All blocks before
-     * this value will be disabled in the selection. Default value is 1. Smaller
-     * values than 1 are not valid.
-     * 
-     * @param minValue
-     *            An integer value between 1 and maxValue
-     */
-    public void setMinValue(int minValue) {
-        if (minValue >= 1 && minValue != this.minValue) {
-            this.minValue = minValue;
+	@Override
+	public void updateState() {
+		super.updateState();
+		getState().setStateValue(getValue());
+		getState().setMaxValue(getMaxValue());
+		getState().setMinValue(getMinValue());
+		getState().setBlockSize(blockSize);
+	}
 
-            Object value = getValue();
-            int intValue = value == null ? 0 : Integer
-                    .valueOf(value.toString());
-            if (intValue < minValue) {
-                setValue(minValue, false);
-            }
-            requestRepaint();
-        }
-    }
+	/**
+	 * Set the minimum number of blocks the user can choose. All blocks before
+	 * this value will be disabled in the selection. Default value is 1. Smaller
+	 * values than 1 are not valid.
+	 * 
+	 * @param minValue
+	 *            An integer value between 1 and maxValue
+	 */
+	public void setMinValue(int minValue) {
+		if (minValue >= 1 && minValue != this.minValue) {
+			this.minValue = minValue;
 
-    /**
-     * Get the current minimum value that can be selected.
-     * 
-     * @return
-     */
-    public int getMinValue() {
-        return minValue;
-    }
+			Object value = getValue();
+			int intValue = value == null ? 0 : Integer
+					.valueOf(value.toString());
+			if (intValue < minValue) {
+				setValue(minValue, false);
+			}
+			requestRepaint();
+		} else if (minValue < 1) {
+			throw new IllegalArgumentException(
+					"Minimum value cannot be below 1");
+		}
+	}
 
-    /**
-     * Helper method for calculating the block size. setWidth() method will
-     * override this value and vica versa.
-     * 
-     * @param size
-     */
-    public void setBlockSize(int size) {
-        blockSize = size;
-        super.setWidth(maxValue * size + "px");
-    }
+	/**
+	 * Get the current minimum value that can be selected.
+	 * 
+	 * @return
+	 */
+	public int getMinValue() {
+		return minValue;
+	}
 
-    @Override
-    public void setWidth(float width, int unit) {
-        super.setWidth(width, unit);
-        blockSize = null;
-    }
+	/**
+	 * Defines a width for the an individual block in the selector. This will
+	 * make the component's width undefined thus overriding any previously set
+	 * values.
+	 * 
+	 * @param size
+	 */
+	public void setBlockSize(Integer size) {
+		blockSize = size;
+		super.setWidth(null);
+		requestRepaint();
+	}
 
-    @Override
-    @Deprecated
-    public void setWidth(float width) {
-        super.setWidth(width);
-        blockSize = null;
-    }
+	@Override
+	public void setWidth(float width, Unit unit) {
+		super.setWidth(width, unit);
+		blockSize = null;
+	}
 
-    @Override
-    public void setWidth(String width) {
-        super.setWidth(width);
-        blockSize = null;
-    }
+	@Override
+	public void setWidth(String width) {
+		if (width == null && blockSize == null) {
+			throw new IllegalArgumentException(
+					"You may not define a null width. If you want to use an undefined width, please "
+							+ "specify a block size instead.");
+		}
+		super.setWidth(width);
+		blockSize = null;
+	}
 }

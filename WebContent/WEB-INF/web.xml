@@ -12,8 +12,8 @@
 		<servlet-class>
 			com.vaadin.terminal.gwt.server.ApplicationServlet</servlet-class>
 		<init-param>
-			<param-name>application</param-name>
-			<param-value>org.vaadin.kim.levelselector.LevelselectorApplication</param-value>
+			<param-name>root</param-name>
+			<param-value>org.vaadin.kim.levelselector.LevelselectorRoot</param-value>
 			<description>Vaadin application class to start</description>
 		</init-param>
 		<init-param>
