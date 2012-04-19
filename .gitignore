@@ -4,3 +4,6 @@
 src/rebel.xml
 build
 WebContent/VAADIN/widgetsets
+WebContent/VAADIN/gwt-unitCache/
+WebContent/VAADIN/widgetsets/
+GWT development mode for LevelSelector.launch

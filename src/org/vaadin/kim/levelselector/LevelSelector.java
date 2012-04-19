@@ -141,8 +141,8 @@ public class LevelSelector extends AbstractField<Integer> {
 	 * @param size
 	 */
 	public void setBlockSize(Integer size) {
-		blockSize = size;
 		super.setWidth(null);
+		blockSize = size;
 		requestRepaint();
 	}
 

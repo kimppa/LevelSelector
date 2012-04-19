@@ -13,7 +13,7 @@ import com.vaadin.ui.Root;
 import com.vaadin.ui.TextField;
 import com.vaadin.ui.VerticalLayout;
 
-@Theme("example")
+//@Theme("example")
 public class LevelselectorRoot extends Root implements
         ValueChangeListener {
 
@@ -33,11 +33,12 @@ public class LevelselectorRoot extends Root implements
 
         final LevelSelector selector = new LevelSelector();
         selector.setCaption("Select volume level");
-        selector.setMaxValue(25);
+        selector.setMaxValue(10);
         selector.setValue(3);
         selector.setMinValue(2);
         selector.setHeight("15px");
         selector.setBlockSize(8);
+//        selector.setWidth("100px");
         selector.addListener(this);
         selector.setImmediate(true);
         layout.addComponent(selector);
