@@ -1,9 +1,11 @@
 Manifest-Version: 1.0
-Class-Path: 
-Vaadin-Package-Version: 1
-Vaadin-Widgetsets: com.vaadin.incubator.levelselector.LevelSelectorApplicationWidgetset
-Implementation-Title: LevelSelector
-Implementation-Version: 0.0.1
-Implementation-Vendor: Oy IT Mill Ltd
 Vaadin-License-Title: Apache License 2.0
+Implementation-Vendor: Kim Leppänen
+Implementation-Title: LevelSelector
+Implementation-Version: 0.1.1
 Vaadin-License-File: http://www.apache.org/licenses/LICENSE-2.0.html
+Vaadin-Package-Version: 1
+Vaadin-Widgetsets: org.vaadin.kim.levelselector.widgetset.LevelSelecto
+ rApplicationWidgetset
+Class-Path: 
+

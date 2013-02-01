@@ -9,16 +9,17 @@
 	</context-param>
 	<servlet>
 		<servlet-name>Levelselector Application</servlet-name>
-		<servlet-class>
-			com.vaadin.terminal.gwt.server.ApplicationServlet</servlet-class>
+		<servlet-class>com.vaadin.server.VaadinServlet</servlet-class>
 		<init-param>
-			<param-name>application</param-name>
-			<param-value>org.vaadin.kim.levelselector.LevelselectorApplication</param-value>
-			<description>Vaadin application class to start</description>
+			<param-name>UI</param-name>
+			<param-value>org.vaadin.kim.levelselector.LevelselectorUI</param-value>
+			<description>Vaadin UI class to use</description>
 		</init-param>
 		<init-param>
+			<description>
+			Application widgetset</description>
 			<param-name>widgetset</param-name>
-			<param-value>org.vaadin.kim.levelselector.LevelSelectorApplicationWidgetset</param-value>
+			<param-value>org.vaadin.kim.levelselector.widgetset.LevelSelectorApplicationWidgetset</param-value>
 		</init-param>
 	</servlet>
 	<servlet-mapping>
