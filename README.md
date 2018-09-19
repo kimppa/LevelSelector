@@ -1,3 +1,6 @@
+[![Published on Vaadin  Directory](https://img.shields.io/badge/Vaadin%20Directory-published-00b4f0.svg)](https://vaadin.com/directory/component/levelselector)
+[![Stars on Vaadin Directory](https://img.shields.io/vaadin-directory/star/levelselector.svg)](https://vaadin.com/directory/component/levelselector)
+
 To compile the widgetset, you need to get Google Web Toolkit. Download it 
 from http://code.google.com/webtoolkit/download.html (the component is originally
 written for GWT 1.7.0) and you need to extract the contents into the
@@ -6,7 +9,9 @@ written for GWT 1.7.0) and you need to extract the contents into the
 If you use another platform than OS X, you need to edit the file 
 /build/build.xml and change the line containing
 
-	<pathelement path="build/lib/gwt/gwt-dev-mac.jar" />
+```
+<pathelement path="build/lib/gwt/gwt-dev-mac.jar" />
+```
 
 by replacing "mac" with your current platform ("windows" for Windows and "linux" 
 for the various Linux flavors).
